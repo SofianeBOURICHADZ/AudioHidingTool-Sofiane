@@ -17,11 +17,12 @@ find_package(OpenSSL REQUIRED)
 add_executable(AudioHider
     main.cpp
     Window.cpp
-    Back.cpp
+    Engine.cpp
+    
 )
 
 target_include_directories(AudioHider PRIVATE 
-    ${CMAKE_CURRENT_SOURCE_DIR}/src
+    ${CMAKE_CURRENT_SOURCE_DIR}
 )
 
 target_link_libraries(AudioHider PRIVATE 

@@ -57,3 +57,36 @@ Window::Window(QWidget *parent) : QMainWindow(parent) {
     
 }
 
+bool Window::selectIntialFile() {
+    QString filePath = QFileDialog::getOpenFileName(this, "Select Audio File", "", "WAV Audio Files (*.wav)");
+    if (filePath.isEmpty()) {
+        return false;
+    }
+    m_currentFilePath = filePath;
+    m_fileLabel->setText("Loaded file: " + QFileInfo(filePath).fileName());
+    return true;
+}
+
+void Window::changeFile() {
+    selectIntialFile();
+}
+
+void Window::handleEncrypt() {
+    if (m_currentFilePath.isEmpty()) {
+        QMessageBox::warning(this, "Error", "No audio file loaded!");
+        return ;
+    }
+
+    QString userPassword = m_pwdInput->text();
+    if (userPassword.isEmpty()) {
+        QMessageBox::warning(this, "Missing input", "Enter Password");
+        return;
+    }
+
+    QString message = m_textArea->toPlainText();
+    if (userPassword.isEmpty()) {
+        QMessageBox::warning(this, "Missing input", "Enter Message to hide");
+        return;
+    }
+
+}
