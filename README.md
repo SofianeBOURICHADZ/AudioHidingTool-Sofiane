@@ -1,0 +1,1 @@
+AUDIO HIDER is an open-source linux tool to hide messages in an encrypted format inside audio files. It doesn't affect the quality of the audio file, and only a combination of password (set by user) and key and code can decrypt the message.
