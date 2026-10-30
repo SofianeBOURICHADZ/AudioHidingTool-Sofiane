@@ -1,5 +1,5 @@
 #include "Window.h"
-#include "Back.h"
+#include "Engine.h"
 #include <QtWidgets/QVBoxLayout>
 #include <QtWidgets/QHBoxLayout>
 #include <QtWidgets/QFormLayout>
@@ -89,4 +89,41 @@ void Window::handleEncrypt() {
         return;
     }
 
+    EncryptionCredentials creds = Engine::generateCredentials(userPassword.toStdString());
+
+    m_keyInput->setText(QString::fromStdString(creds.key));
+    m_codeInput->setText(QString::fromStdString(creds.code));
+
+    QString outPath = QFileDialog::getSaveFileName(this, "Save Encrypted Audio As", "", "WAV Audio Files (*.wav)");
+    if (outPath.isEmpty()) return;
+
+    bool ok = Engine::encodeMessage(m_currentFilePath.toStdString(),
+outPath.toStdString(), creds, message.toStdString());
+
+if (ok) {
+    QMessageBox::information(this, "Success",
+    QString("Success! \n\n NEEDED TO DECRYPT: \n\n Key: %1\n Code: %2")
+.arg(QString::fromStdString(creds.key)).arg(QString::fromStdString(creds.code)));
+    
+}
+else{
+    QMessageBox::critical(this, "Error", "Audio file is too small to fit this message payload.");
+}
+
+}
+
+
+void Window::handleDecrypt() {
+    if (m_currentFilePath.isEmpty()) {
+        QMessageBox::warning(this, "Error", "No audio file loaded!");
+        return;
+    }
+
+    EncryptionCredentials creds;
+    creds.password = m_pwdInput->text().toStdString();
+    creds.key = m_keyInput->text().toStdString();
+    creds.code = m_codeInput->text().toStdString();
+
+    std::string result = Engine::decodeMessage(m_currentFilePath.toStdString(), creds);
+    m_textArea->setPlainText(QString::fromStdString(result));
 }
